@@ -1,0 +1,85 @@
+<repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.7.0">
+  <name>Council</name>
+  <type>AGGREGATE</type>
+  <inclTick>true</inclTick>
+  <inclBatchRun>true</inclBatchRun>
+  <inclRandomSeed>true</inclRandomSeed>
+  <scheduleParams>
+    <start>1.0</start>
+    <interval>1.0</interval>
+    <priority>Infinity</priority>
+    <pType>FIRST</pType>
+    <duration>-1.0</duration>
+    <frequency>REPEAT</frequency>
+    <hashCode>2122690660</hashCode>
+  </scheduleParams>
+  <atEnd>false</atEnd>
+  <methodDataSources class="linked-hash-map">
+    <entry>
+      <string>Rate per Farmer</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Rate per Farmer</id>
+        <className>abm.agents.Sage</className>
+        <methodName>getRatePerFarmer</methodName>
+        <aggType>MAX</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Association Level</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Association Level</id>
+        <className>abm.agents.Sage</className>
+        <methodName>getGovType</methodName>
+        <aggType>MAX</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Bandits Votes</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Bandits Votes</id>
+        <className>abm.agents.Sage</className>
+        <methodName>getPercVotesBandits</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Farmers Votes</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Farmers Votes</id>
+        <className>abm.agents.Sage</className>
+        <methodName>getPercVotesFarmers</methodName>
+        <aggType>MAX</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Proposed Rate</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Proposed Rate</id>
+        <className>abm.agents.Sage</className>
+        <methodName>getProposedRate</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Bandits Multiplier</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Bandits Multiplier</id>
+        <className>abm.agents.Sage</className>
+        <methodName>getRatePerBandit</methodName>
+        <aggType>MAX</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Security Tax</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Security Tax</id>
+        <className>abm.agents.Sage</className>
+        <methodName>getSecurityTax</methodName>
+        <aggType>MAX</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+  </methodDataSources>
+  <countSources class="linked-hash-map"/>
+  <customNADataSources class="linked-hash-map"/>
+  <customAggDataSources class="linked-hash-map"/>
+</repast.simphony.data2.engine.DataSetDescriptor>

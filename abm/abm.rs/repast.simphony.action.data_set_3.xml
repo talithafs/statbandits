@@ -1,0 +1,58 @@
+<repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.7.0">
+  <name>Parameters</name>
+  <type>AGGREGATE</type>
+  <inclTick>true</inclTick>
+  <inclBatchRun>true</inclBatchRun>
+  <inclRandomSeed>true</inclRandomSeed>
+  <scheduleParams>
+    <start>1.0</start>
+    <interval>1.0</interval>
+    <priority>Infinity</priority>
+    <pType>FIRST</pType>
+    <duration>-1.0</duration>
+    <frequency>REPEAT</frequency>
+    <hashCode>-1350775193</hashCode>
+  </scheduleParams>
+  <atEnd>false</atEnd>
+  <methodDataSources class="linked-hash-map">
+    <entry>
+      <string>Max Beta</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Max Beta</id>
+        <className>abm.agents.Farmer</className>
+        <methodName>getBeta</methodName>
+        <aggType>MAX</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Min Beta</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Min Beta</id>
+        <className>abm.agents.Farmer</className>
+        <methodName>getBeta</methodName>
+        <aggType>MIN</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Avg Beta</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Avg Beta</id>
+        <className>abm.agents.Farmer</className>
+        <methodName>getBeta</methodName>
+        <aggType>MEAN</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Rate</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Rate</id>
+        <className>abm.agents.Sage</className>
+        <methodName>getRate</methodName>
+        <aggType>MAX</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+  </methodDataSources>
+  <countSources class="linked-hash-map"/>
+  <customNADataSources class="linked-hash-map"/>
+  <customAggDataSources class="linked-hash-map"/>
+</repast.simphony.data2.engine.DataSetDescriptor>

@@ -1,0 +1,15 @@
+<repast.simphony.data2.engine.FileSinkDescriptor simphonyVersion="2.7.0">
+  <name>Incomes</name>
+  <dataSet>Incomes</dataSet>
+  <delimiter>,</delimiter>
+  <format>TABULAR</format>
+  <sourceIds class="linked-hash-set">
+    <string>tick</string>
+    <string>run</string>
+    <string>Pop Avg Income</string>
+    <string>Farmers Avg Income</string>
+    <string>Bandits Avg Income</string>
+  </sourceIds>
+  <fileName>incomes.csv</fileName>
+  <addTimeStamp>true</addTimeStamp>
+</repast.simphony.data2.engine.FileSinkDescriptor>

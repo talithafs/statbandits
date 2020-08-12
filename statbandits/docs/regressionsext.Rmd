@@ -1,0 +1,302 @@
+---
+output: 
+  html_document:
+    theme: cerulean
+    highlight: default
+---
+
+```{r, include=FALSE}
+
+ 
+library(tidyverse)
+library(AER)
+library(kableExtra)
+library(knitr)
+source(".../data.R")
+```
+
+
+```{r, include=FALSE}
+hooks = knitr::knit_hooks$get()
+
+force("output")
+
+hook_foldable <- function(x, options) {
+  
+    res = hooks[["output"]](x, options)
+    
+    if (isFALSE(options[[paste0("fold.", "output")]])) return(res)
+    
+    paste0(
+      "<details><summary>Details</summary>\n\n",
+      res,
+      "\n\n</details>"
+    )
+}
+
+knitr::knit_hooks$set(output = hook_foldable)
+
+make_kable <- function(tbl){
+  
+  kable(tbl) %>% 
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                  full_width = F,
+                  position = "left")
+}
+
+
+print_lm <- function(dep, reg, full){
+  
+    dep = paste0(dep," ~ ")
+    linmod <- summary(lm(as.formula(paste(dep,reg)), full))
+    make_kable(linmod$coefficients) 
+}
+
+print_probit <- function(dep, reg, full){
+  
+  dep = paste0("factor(", dep,") ~ ")
+  probmod = summary(glm(as.formula(paste(dep,reg)),data = full, family = binomial(link = "probit")))
+  
+  make_kable(probmod$coefficients)
+}
+
+print_iv <- function(dep, reg, instr, controls, full){
+  
+  reg1 <- paste0(dep, " ~ ", reg, " + ", controls, " | ", instr, " + ", controls)
+  reg2 <- paste0(reg, " ~ ", instr, " + ", controls)
+  
+  iv <- summary(ivreg(reg1, data = full), diagnostics = T)
+  lin <- summary(lm(reg2, data = full))
+  
+  a = make_kable(iv$coefficients)
+  b = make_kable(iv$diagnostics[-3,])
+  c = make_kable(lin$coefficients)
+  
+  return(list(coefs = a, diags = b, fstg = c))
+}
+```
+
+# {.tabset}
+
+```{r, include=FALSE}
+full_dict = read_csv(".../dict.csv") 
+full <- read_csv("endvalsext.csv")
+blc_full <- get_balanced_table(full)
+```
+
+## Data and Parameters
+
+### Parameters
+
+```{r, echo=FALSE, fold.output=FALSE}
+dict <- full_dict %>% filter(family == "param")
+dict <- dict[,1:2]
+names(dict) <- c("Parameter", "Description")
+
+make_kable(dict)
+```
+
+### Endogenous Variables
+
+```{r, echo=FALSE, fold.output=FALSE}
+dict <- full_dict %>% filter(family == "endog")
+dict <- dict[,1:2]
+dict$name <- sapply(dict$name, function(x){gsub("_mean","",x)})
+names(dict) <- c("Variable", "Description")
+
+make_kable(dict)
+```
+
+### Data
+
+```{r, echo = FALSE, fold.output=FALSE}
+make_kable(head(full,2000)) %>% 
+  scroll_box(width = "100%", height = "300px")
+```
+$~$
+```{r, echo = FALSE}
+Hmisc::describe(full)
+```
+
+## Linear Models
+
+$v_{i,r} = s^f_{i} + \delta_{i} + \lambda_{i} + \epsilon{i,r}$ 
+
+### Incomes
+
+#### Farmers
+
+```{r, echo = FALSE, fold.output=FALSE}
+reg = "foragers_income + prod_advantage + perc_non_farmers + prop_bandits"
+
+print_lm("farmers_avg_income", reg, full)
+```
+
+#### Bandits
+
+```{r, echo = FALSE, fold.output=FALSE}
+print_lm("bandits_avg_income", reg, full)
+```
+
+#### Population
+
+```{r, echo = FALSE, fold.output=FALSE}
+print_lm("pop_avg_income", reg, full)
+```
+
+#### Difference Between Farmers and Bandits
+
+```{r, echo = FALSE, fold.output=FALSE}
+print_lm("diff_incomes", reg, full)
+```
+
+### Bandits Population
+
+```{r, echo = FALSE, fold.output=FALSE}
+print_lm("n_bandits", reg, full)
+```
+
+### Beta
+
+```{r, echo = FALSE, fold.output=FALSE}
+print_lm("beta", reg, full)
+```
+
+### Rates
+
+#### Confiscation Rate
+```{r, echo = FALSE, fold.output=FALSE}
+print_lm("rate", reg, full)
+```
+
+#### Proposed Rate
+
+```{r, echo = FALSE, fold.output=FALSE}
+print_lm("proposed_rate", reg, full)
+```
+
+### Security Tax
+
+```{r, echo = FALSE, fold.output=FALSE}
+print_lm("security_tax", reg, full)
+```
+
+### Time to reach Hierarchy
+
+```{r, echo = FALSE, fold.output=FALSE}
+print_lm("time_to_hierarchy", reg, filter(full, time_to_hierarchy != 101))
+```
+
+## Probabilistic Models
+
+Dependent variable: `association_level`
+
+### Probit
+
+```{r, echo=FALSE, fold.output=FALSE}
+print_probit("association_level", reg, blc_full)
+```
+
+### Linear Probability
+
+```{r, echo=FALSE, fold.output=FALSE}
+print_lm("association_level", reg, blc_full)
+```
+
+## Causal Models
+
+### Dependent variable: `pop_avg_income`
+
+#### OLS
+
+Without Controls
+
+```{r, echo=FALSE, fold.output=FALSE}
+reg = "association_level"
+print_lm("pop_avg_income", reg, full)
+```
+
+With Controls
+
+```{r, echo=FALSE, fold.output=FALSE}
+reg = "association_level + foragers_income + perc_non_farmers + prop_bandits"
+print_lm("pop_avg_income", reg, full)
+```
+
+```{r, echo=FALSE, fold.output=FALSE}
+reg = "association_level + prod_advantage + foragers_income + perc_non_farmers + prop_bandits"
+print_lm("pop_avg_income", reg, full)
+```
+
+#### 2SLS
+
+Coeficients
+
+```{r, echo=FALSE, fold.output=FALSE}
+reg = "association_level"
+instr = "prod_advantage"
+controls = "foragers_income + perc_non_farmers + prop_bandits" 
+tabs = print_iv("pop_avg_income", reg, instr, controls, full)
+
+tabs$coefs
+```
+
+Diagnostics
+
+```{r, echo=FALSE, fold.output=FALSE}
+tabs$diags
+```
+
+First Stage
+
+```{r, echo=FALSE, fold.output=FALSE}
+tabs$fstg
+```
+
+### Dependent variable: `diff_incomes`
+
+#### OLS
+
+Without Controls
+
+```{r, echo=FALSE, fold.output=FALSE}
+reg = "association_level"
+print_lm("pop_avg_income", reg, full)
+```
+
+With Controls
+
+```{r, echo=FALSE, fold.output=FALSE}
+reg = "association_level + foragers_income + perc_non_farmers + prop_bandits"
+print_lm("pop_avg_income", reg, full)
+```
+
+```{r, echo=FALSE, fold.output=FALSE}
+reg = "association_level + prod_advantage + foragers_income + perc_non_farmers + prop_bandits"
+print_lm("pop_avg_income", reg, full)
+```
+
+#### 2SLS
+
+Coeficients
+
+```{r, echo=FALSE, fold.output=FALSE}
+reg = "association_level"
+instr = "prod_advantage"
+controls = "foragers_income + perc_non_farmers + prop_bandits" 
+tabs = print_iv("pop_avg_income", reg, instr, controls, full)
+
+tabs$coefs
+```
+
+Diagnostics
+
+```{r, echo=FALSE, fold.output=FALSE}
+tabs$diags
+```
+
+First Stage
+
+```{r, echo=FALSE, fold.output=FALSE}
+tabs$fstg
+```

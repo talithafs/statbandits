@@ -1,0 +1,17 @@
+<repast.simphony.data2.engine.FileSinkDescriptor simphonyVersion="2.7.0">
+  <name>Council</name>
+  <dataSet>Council</dataSet>
+  <delimiter>,</delimiter>
+  <format>TABULAR</format>
+  <sourceIds class="linked-hash-set">
+    <string>Association Level</string>
+    <string>Proposed Rate</string>
+    <string>Bandits Votes</string>
+    <string>Farmers Votes</string>
+    <string>tick</string>
+    <string>run</string>
+    <string>Security Tax</string>
+  </sourceIds>
+  <fileName>council.csv</fileName>
+  <addTimeStamp>true</addTimeStamp>
+</repast.simphony.data2.engine.FileSinkDescriptor>
